@@ -1,13 +1,13 @@
 # EXPERIMENT-01-INTERFACING-A-DIGITAL-OUTPUT-TO-IOT-DEVELOPMENT-BOARD
 
 
-**DATE:**
+**DATE: 30/04/2026**
 
-**NAME:**
+**NAME: INIYASRI S**
 
-**ROLL NO:**
+**ROLL NO: 212223230081**
 
-**DEPARTMENT:**
+**DEPARTMENT: AIDS**
 
 ## Aim
 
@@ -33,13 +33,15 @@ With its power-efficient design, built-in LoRaWAN support, and flexible communic
 
 1. Click on STM 32 CUBE IDE, the following screen will appear
    
- ![image](https://user-images.githubusercontent.com/36288975/226189166-ac10578c-c059-40e7-8b80-9f84f64bf088.png)
+ <img width="1919" height="1199" alt="Screenshot 2026-05-01 134710" src="https://github.com/user-attachments/assets/9cac74a6-e771-48d3-a269-34e62692ef28" />
+
 
 
 2. Click on FILE, click on new stm 32 project
    
-![image](https://user-images.githubusercontent.com/36288975/226189215-2d13ebfb-507f-44fc-b772-02232e97c0e3.png)
-![image](https://user-images.githubusercontent.com/36288975/226189230-bf2d90dd-9695-4aaf-b2a6-6d66454e81fc.png)
+<img width="1919" height="1199" alt="Screenshot 2026-05-01 134817" src="https://github.com/user-attachments/assets/f934e89d-319a-4340-b3c1-eaa36ef93cd6" />
+<img width="1919" height="1199" alt="Screenshot 2026-05-01 134943" src="https://github.com/user-attachments/assets/b136c196-302b-47ae-b3de-9f5316840ab1" />
+
 
 3. Select the target to be programmed as shown below and click on next
    
@@ -67,16 +69,19 @@ With its power-efficient design, built-in LoRaWAN support, and flexible communic
 
 8. Edit the program and as per required 
 
-![image](https://user-images.githubusercontent.com/36288975/226189461-a573e62f-a109-4631-a250-a20925758fe0.png)
+<img width="1919" height="1199" alt="Screenshot 2026-05-01 135129" src="https://github.com/user-attachments/assets/b5729c57-c418-479b-94c0-99f14cf9c9d5" />
+
 
 
 9. Use project and build all 
 
-![image](https://user-images.githubusercontent.com/36288975/226189554-3f7101ac-3f41-48fc-abc7-480bd6218dec.png)
+<img width="1919" height="1199" alt="Screenshot 2026-05-01 135209" src="https://github.com/user-attachments/assets/cf62f438-307b-466e-86a3-ffe7bcb82ed9" />
+
 
 10. Once the project is bulild 
 
-![image](https://user-images.githubusercontent.com/36288975/226189577-c61cc1eb-3990-4968-8aa6-aefffc766b70.png)
+<img width="730" height="247" alt="Screenshot 2026-05-01 135218" src="https://github.com/user-attachments/assets/b2a53464-69d9-4c3f-a036-5c68792ecc14" />
+
 
 11. connect the iot board to power supply and usb
 
@@ -87,7 +92,8 @@ With its power-efficient design, built-in LoRaWAN support, and flexible communic
 
 13. Connect the STM board through the COM port, then upload the corresponding project ELF file/Hex file or Bin file in Erasing & Programming Window,while ensuring the board is in flash mode, and click on 'Start Program'.
     
-    ![image](https://github.com/user-attachments/assets/9383531d-8204-4697-9321-55afb6abee2e)
+   <img width="1600" height="859" alt="WhatsApp Image 2026-05-01 at 2 04 11 PM" src="https://github.com/user-attachments/assets/e4ea4846-5b99-4e5f-b1ad-09f20dffae03" />
+
 
 14.  After the file download is complete, switch your board to run mode and press the reset button to see the output
 
@@ -99,10 +105,80 @@ With its power-efficient design, built-in LoRaWAN support, and flexible communic
 ## STM 32 CUBE PROGRAM
 
 ```
-// Your STM 32 CUBE Program code here
+#include "main.h"
+
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+
+int main(void)
+{
+  HAL_Init();
+  SystemClock_Config();
+  MX_GPIO_Init();
+
+  while (1)
+  {
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+    HAL_Delay(4000);
+
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+    HAL_Delay(4000);
+  }
+}
+
+void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
+
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
+  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
+  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_6;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+
+  HAL_RCC_OscConfig(&RCC_OscInitStruct);
+
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK |
+                               RCC_CLOCKTYPE_SYSCLK |
+                               RCC_CLOCKTYPE_PCLK1 |
+                               RCC_CLOCKTYPE_PCLK2;
+
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_MSI;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+  HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0);
+}
+
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+
+  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+}
 ```
 
 ## OUTPUT
+**OFF**
+<img width="1600" height="1200" alt="WhatsApp Image 2026-05-01 at 1 59 57 PM" src="https://github.com/user-attachments/assets/ab2d8762-2c81-4282-b596-8efe21ce5313" />
+
+
+**ON**
+<img width="1600" height="1200" alt="WhatsApp Image 2026-05-01 at 2 00 08 PM" src="https://github.com/user-attachments/assets/d454ea70-3508-4668-806d-7258970815db" />
+
+
 
 ## Result
 
